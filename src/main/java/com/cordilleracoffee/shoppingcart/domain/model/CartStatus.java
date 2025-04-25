@@ -1,5 +1,5 @@
 package com.cordilleracoffee.shoppingcart.domain.model;
 
 public enum CartStatus {
-    ACTIVE, CHECKED_OUT, ABANDONED
+    ACTIVE, CHECKED_OUT, ABANDONED, PROCESSING
 }

@@ -1,6 +1,7 @@
 package com.cordilleracoffee.shoppingcart.application.impl;
 
 import com.cordilleracoffee.infrastructure.api.client.pricing.model.ValidationResponse;
+import com.cordilleracoffee.shoppingcart.application.CheckoutService;
 import com.cordilleracoffee.shoppingcart.application.exception.CartNotFoundException;
 import com.cordilleracoffee.shoppingcart.application.exception.InvalidCartException;
 import com.cordilleracoffee.shoppingcart.domain.model.ShoppingCart;
@@ -16,13 +17,14 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CheckoutCartServiceImpl {
+public class CheckoutCartServiceImpl implements CheckoutService {
 
     private final ShoppingCartRepository cartRepository;
     private final PricingService pricingService;
 
     @Transactional
-    public void checkout(UUID cartId, String userId) {
+    @Override
+    public ShoppingCart checkout(UUID cartId, String userId) {
 
         ShoppingCart cart = cartRepository.findActiveByIdAndUserId(cartId, userId)
                 .orElseThrow(() -> new CartNotFoundException("Cart not found with id: " + cartId + " for user: " + userId));
@@ -33,8 +35,8 @@ public class CheckoutCartServiceImpl {
             throw new InvalidCartException("Cart is invalid", validationResponse);
         }
 
-
-
+        cart.process();
+        return cartRepository.save(cart);
     }
 
 }

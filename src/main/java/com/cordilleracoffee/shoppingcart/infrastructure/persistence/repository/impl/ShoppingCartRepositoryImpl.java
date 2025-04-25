@@ -19,4 +19,9 @@ public class ShoppingCartRepositoryImpl implements ShoppingCartRepository {
     public Optional<ShoppingCart> findActiveByIdAndUserId(UUID id, String userId) {
         return cartJpaRepository.findActiveByIdAndUserId(id, userId);
     }
+
+    @Override
+    public ShoppingCart save(ShoppingCart cart) {
+        return cartJpaRepository.save(cart);
+    }
 }

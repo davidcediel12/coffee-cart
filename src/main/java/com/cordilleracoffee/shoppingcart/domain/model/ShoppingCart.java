@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public class ShoppingCart {
     private UUID sessionId;
     private CartStatus status;
     private String currency;
+    private BigDecimal price;
 
     @CreatedDate
     private Instant createdAt;
@@ -34,5 +36,14 @@ public class ShoppingCart {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingCart")
     private Set<CartItem> items;
+
+
+
+    public void process(){
+        if(status.equals(CartStatus.ACTIVE)){
+            throw new IllegalStateException("Cart that is no active cannot be checked out");
+        }
+        this.status = CartStatus.PROCESSING;
+    }
 
 }

@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface ShoppingCartRepository {
 
     Optional<ShoppingCart> findActiveByIdAndUserId(UUID id, String userId);
+    ShoppingCart save(ShoppingCart cart);
 }
