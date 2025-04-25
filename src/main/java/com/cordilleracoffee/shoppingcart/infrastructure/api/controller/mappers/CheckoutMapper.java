@@ -13,9 +13,11 @@ import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface CheckoutMapper {
+    @Mapping(target = "cartId", source = "id")
     CheckoutResponse toDto(ShoppingCart cart);
 
     @Mapping(target = "discount", source = "discount")
+    @Mapping(target = "itemId", source = "id")
     CartItemResponse toDto(CartItem item);
 
     ItemDiscountResponse toDto(ItemDiscount discount);
