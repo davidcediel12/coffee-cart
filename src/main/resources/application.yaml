@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: shoppingcart
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      format_sql: true
+    show-sql: true
+
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/cordillera-coffee?currentSchema=shopping_cart
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
