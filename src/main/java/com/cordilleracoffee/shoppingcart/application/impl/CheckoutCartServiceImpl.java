@@ -32,7 +32,7 @@ public class CheckoutCartServiceImpl implements CheckoutService {
         ValidationResponse validationResponse = pricingService.validateShoppingCart(cart);
 
         if(Objects.equals(Boolean.FALSE, validationResponse.getIsValid())){
-            throw new InvalidCartException("Cart is invalid", validationResponse);
+            throw new InvalidCartException("Cart is invalid", validationResponse, cart);
         }
 
         cart.process();

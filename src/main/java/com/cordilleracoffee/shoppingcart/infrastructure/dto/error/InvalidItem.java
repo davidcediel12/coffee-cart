@@ -7,7 +7,6 @@ public record InvalidItem(
         Long productId,
         Long variantId,
         BigDecimal expectedPrice,
-        BigDecimal actualPrice,
         Optional<AppliedDiscount> appliedDiscount,
         String reason
 ) {
