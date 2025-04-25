@@ -1,0 +1,190 @@
+openapi: 3.0.3
+info:
+  title: Pricing and Promotions
+  description: |-
+    
+    Specification of the Promotions context, used to manage the whole lifecycle of discount and coupons.
+  contact:
+    email: david.cediel@alumnos.upm.es
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+servers:
+  - url: https://localhost:8080/v1/pricing
+    description: Local development
+tags:
+  - name: Pricing
+    description: Tag used to validate price of products
+paths:
+  /validate:
+    post:
+      tags:
+        - Pricing
+      summary: Validate that items has a correct final price
+      description: >+
+        It validates that the discount for each item exists and its valild. 
+
+        1. If a discount ID is provided, it will only look up for this discount. 
+
+        2. If the discount ID is not provided, it will iterate over all valid discounts to check if the final price is valid. If it does not found a discount, it will return the most relevant discount for the item that is active.
+      requestBody:
+        description: Object to create a new product
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductsValidation'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  responses:
+    BadRequest:
+      description: The information is not correct
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Unauthorized:
+      description: Unauthenticated, unable to perform the operation
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    Forbidden:
+      description: Not enough privileges to perform the operation
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+  schemas:
+    ProductsValidation:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: user-123
+          description: User that is performing the validation
+        currency:
+          type: string
+          example: EUR
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/ItemValidation"
+
+    ItemValidation:
+      type: object
+      properties:
+        productId:
+          type: number
+          format: int64
+          example: 20
+        variantId:
+          type: number
+          format: int64
+          example: 21
+        categoryId:
+          type: number
+          format: int64
+          example: 5
+        basePrice:
+          type: number
+          format: double
+          example: 19.99
+        finalPrice:
+          type: number
+          format: double
+          example: 15.99
+        discountId:
+          type: string
+          format: uuid
+          description: If the client knows which discount was applied, it can specify the ID here
+          example: 7ff595f5-1176-4a4a-a6bc-195808f78034
+        couponCode:
+          type: string
+          example: CODE20
+
+    ValidationResponse:
+      type: object
+      properties:
+        isValid:
+          type: boolean
+          example: true
+        validatedAt:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidatedItem"
+
+    ValidatedItem:
+      type: object
+      properties:
+        productId:
+          type: number
+          format: int64
+          example: 20
+        variantId:
+          type: number
+          format: int64
+          example: 21
+        appliedDiscount:
+          $ref: "#/components/schemas/AppliedDiscount"
+        finalPrice:
+          type: number
+          format: double
+          example: 15.99
+    AppliedDiscount:
+      type: object
+      properties:
+        discountId:
+          type: string
+          format: uuid
+          example: 7ff595f5-1176-4a4a-a6bc-195808f78034
+        discountedAmount:
+          type: number
+          format: double
+          example: 5.0
+    ErrorResponse:
+      required:
+        - developerMessage
+        - errorCode
+        - userMessage
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: 2025-04-10T10:51:15.7047861
+        error:
+          type: string
+          description: Code that identify the error
+          example: "PRD-VA-01"
+        message:
+          maxLength: 256
+          pattern: "^[a-zA-Z\\s]*$"
+          type: string
+          example: Error saving the user
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
+

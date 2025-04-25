@@ -12,3 +12,6 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/cordillera-coffee?currentSchema=shopping_cart
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
+api:
+  client:
+    pricing-url: ${PRICING_API}
