@@ -24,6 +24,7 @@ public class ShoppingCart {
 
     private UUID sessionId;
     private CartStatus status;
+    private String currency;
 
     @CreatedDate
     private Instant createdAt;
