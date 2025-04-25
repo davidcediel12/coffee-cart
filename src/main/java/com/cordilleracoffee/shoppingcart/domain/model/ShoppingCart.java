@@ -24,6 +24,8 @@ public class ShoppingCart {
     private String userId;
 
     private UUID sessionId;
+
+    @Enumerated(EnumType.STRING)
     private CartStatus status;
     private String currency;
     private BigDecimal price;
