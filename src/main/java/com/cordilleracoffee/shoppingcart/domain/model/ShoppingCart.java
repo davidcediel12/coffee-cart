@@ -1,15 +1,13 @@
 package com.cordilleracoffee.shoppingcart.domain.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -32,5 +30,8 @@ public class ShoppingCart {
 
     @LastModifiedDate
     private Instant updatedAt;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "shoppingCart")
+    private Set<CartItem> items;
 
 }
