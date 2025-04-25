@@ -87,9 +87,6 @@ components:
     ItemValidation:
       type: object
       properties:
-        isValid:
-          type: boolean
-          example: true
         productId:
           type: number
           format: int64
@@ -136,6 +133,9 @@ components:
     ValidatedItem:
       type: object
       properties:
+        isValid:
+          type: boolean
+          example: true
         productId:
           type: number
           format: int64
