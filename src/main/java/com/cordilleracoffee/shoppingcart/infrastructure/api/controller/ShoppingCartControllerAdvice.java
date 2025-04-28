@@ -5,10 +5,12 @@ import com.cordilleracoffee.infrastructure.api.client.pricing.model.ValidationRe
 import com.cordilleracoffee.shoppingcart.application.exception.CartNotFoundException;
 import com.cordilleracoffee.shoppingcart.application.exception.InvalidCartException;
 import com.cordilleracoffee.shoppingcart.domain.model.CartStatus;
+import com.cordilleracoffee.shoppingcart.infrastructure.api.client.exception.ApiCallException;
 import com.cordilleracoffee.shoppingcart.infrastructure.dto.error.ApiErrorResponse;
 import com.cordilleracoffee.shoppingcart.infrastructure.dto.error.AppliedDiscount;
 import com.cordilleracoffee.shoppingcart.infrastructure.dto.error.InvalidCartResponse;
 import com.cordilleracoffee.shoppingcart.infrastructure.dto.error.InvalidItem;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +24,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @RestControllerAdvice
+@Slf4j
 public class ShoppingCartControllerAdvice {
 
     @ExceptionHandler(InvalidCartException.class)
@@ -35,7 +38,7 @@ public class ShoppingCartControllerAdvice {
                 .findFirst()
                 .map(item -> new InvalidItem(
                         item.getProductId().longValue(),
-                        item.getVariantId().longValue(),
+                        Optional.ofNullable(item.getVariantId()).map(BigDecimal::longValue).orElse(null),
                         Optional.ofNullable(item.getFinalPrice()).map(BigDecimal::valueOf).orElse(null),
                         Optional.ofNullable(item.getAppliedDiscount())
                                 .map(d ->
@@ -64,6 +67,15 @@ public class ShoppingCartControllerAdvice {
         return new ResponseEntity<>(new ApiErrorResponse(LocalDateTime.now(), "SC-NF-01",
                 e.getMessage(), getCurrentUriString()), HttpStatus.NOT_FOUND);
     }
+
+
+    @ExceptionHandler(ApiCallException.class)
+    public ResponseEntity<ApiErrorResponse> handleApiCallException(ApiCallException e) {
+
+        log.error(e.getMessage(), e.getApiException());
+        return new ResponseEntity<>(e.getErrorResponse(), e.getApiException().getStatusCode());
+    }
+
 
     private static String getCurrentUriString() {
         return ServletUriComponentsBuilder.fromCurrentRequestUri().toUriString();
