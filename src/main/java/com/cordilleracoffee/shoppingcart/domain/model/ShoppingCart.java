@@ -42,7 +42,7 @@ public class ShoppingCart {
 
 
     public void process(){
-        if(status.equals(CartStatus.ACTIVE)){
+        if(!status.equals(CartStatus.ACTIVE)){
             throw new IllegalStateException("Cart that is no active cannot be checked out");
         }
         this.status = CartStatus.PROCESSING;

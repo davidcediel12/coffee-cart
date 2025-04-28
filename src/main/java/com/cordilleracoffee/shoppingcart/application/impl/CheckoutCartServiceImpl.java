@@ -27,7 +27,7 @@ public class CheckoutCartServiceImpl implements CheckoutService {
     public ShoppingCart checkout(UUID cartId, String userId) {
 
         ShoppingCart cart = cartRepository.findActiveByIdAndUserId(cartId, userId)
-                .orElseThrow(() -> new CartNotFoundException("Cart not found with id: " + cartId + " for user: " + userId));
+                .orElseThrow(() -> new CartNotFoundException("Active Cart not found with id: " + cartId + " for user: " + userId));
 
         ValidationResponse validationResponse = pricingService.validateShoppingCart(cart);
 
