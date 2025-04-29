@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: Shopping Cart API
+  version: 1.0.0
+  description: Shopping cart service, it manages the whole lifecycle of shopping cart
+  contact:
+    email: david.cediel@alumnos.upm.es
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://localhost:8080/v1/carts
+    description: Local development
+tags:
+  - name: Checkout
+    description: Tag used to group the checkout endpoints
+
+paths:
+  /{cartId}/checkout:
+    post:
+      parameters:
+        - in: path
+          name: cartId
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Shopping cart id
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        - in: header
+          name: App-User-ID
+          required: true
+          schema:
+            type: string
+          description: user that owns the shopping cart
+          example: user-123
+      tags: [Checkout]
+      responses:
+        '200':
+          description: Successful checkout validation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutResponse'
+        '422':
+          description: Cart validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    # --- Success Response ---
+    CheckoutResponse:
+      type: object
+      properties:
+        cartId:
+          type: string
+          format: uuid
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        userId:
+          type: string
+          example: "user-123"
+        status:
+          $ref: '#/components/schemas/CartStatus'
+        currency:
+          type: string
+          example: "USD"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2025-04-25T15:30:00Z"
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemResponse'
+
+    CartItemResponse:
+      type: object
+      properties:
+        itemId:
+          type: string
+          format: uuid
+          example: "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+        productId:
+          type: integer
+          example: 20
+        variantId:
+          type: integer
+          example: 21
+        categoryId:
+          type: integer
+          example: 5
+        quantity:
+          type: integer
+          example: 2
+        unitPrice:
+          type: number
+          format: double
+          example: 10.99
+        finalBasePrice:
+          type: number
+          format: double
+          example: 15.99
+        discount:
+          $ref: '#/components/schemas/ItemDiscountResponse'
+
+    ItemDiscountResponse:
+      type: object
+      properties:
+        discountId:
+          type: string
+          format: uuid
+          example: "7ff595f5-1176-4a4a-a6bc-195808f78034"
+        couponCode:
+          type: string
+          example: "SPRING20"
+        discountType:
+          $ref: '#/components/schemas/DiscountType'
+        discountAmount:
+          type: number
+          format: double
+          example: 5.00
+
+
+    # --- Error Response ---
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Cart validation failed due to invalid item"
+        validatedAt:
+          type: string
+          format: date-time
+          example: "2019-08-24T14:15:22Z"
+        cartStatus:
+          $ref: '#/components/schemas/CartStatus'
+        firstInvalidItem:
+          $ref: '#/components/schemas/InvalidItem'
+        errorCode:
+          type: string
+          example: "FIRST_INVALID_ITEM"
+
+    InvalidItem:
+      type: object
+      properties:
+        productId:
+          type: integer
+          example: 20
+        variantId:
+          type: integer
+          example: 21
+        expectedPrice:
+          type: number
+          format: double
+          example: 20.99
+        actualPrice:
+          type: number
+          format: double
+          example: 15.99
+        appliedDiscount:
+          $ref: '#/components/schemas/AppliedDiscount'
+        reason:
+          type: string
+          example: "PRICE_MISMATCH"
+
+    AppliedDiscount:
+      type: object
+      properties:
+        discountId:
+          type: string
+          format: uuid
+          example: "7ff595f5-1176-4a4a-a6bc-195808f78034"
+        discountedAmount:
+          type: number
+          format: double
+          example: 5.00
+
+    # --- Enums ---
+    CartStatus:
+      type: string
+      enum: [ACTIVE, CHECKED_OUT, ABANDONED, PROCESSING]
+      example: "ACTIVE"
+
+    DiscountType:
+      type: string
+      enum: [PERCENTAGE, FIXED]
+      example: "FIXED"
