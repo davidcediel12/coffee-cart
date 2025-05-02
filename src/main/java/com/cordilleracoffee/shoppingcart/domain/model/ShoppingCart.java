@@ -8,6 +8,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,6 +47,12 @@ public class ShoppingCart {
         if(!status.equals(CartStatus.ACTIVE)){
             throw new IllegalStateException("Cart that is no active cannot be checked out");
         }
+
+        this.price = Optional.ofNullable(this.items).orElse(Collections.emptySet())
+                .stream()
+                .map(CartItem::getFinalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         this.status = CartStatus.PROCESSING;
     }
 

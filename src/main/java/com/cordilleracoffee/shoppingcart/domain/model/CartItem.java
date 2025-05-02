@@ -35,4 +35,9 @@ public class CartItem {
     private BigDecimal unitPrice;
 
     private BigDecimal finalBasePrice;
+
+
+    public BigDecimal getFinalPrice(){
+        return finalBasePrice.multiply(BigDecimal.valueOf(quantity));
+    }
 }

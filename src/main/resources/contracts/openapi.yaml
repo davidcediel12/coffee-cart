@@ -67,6 +67,11 @@ components:
         currency:
           type: string
           example: "USD"
+        price:
+          type: number
+          format: double
+          example: 55.58
+          description: Cart's total price
         createdAt:
           type: string
           format: date-time
