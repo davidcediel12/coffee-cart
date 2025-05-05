@@ -45,4 +45,9 @@ public class ShoppingCartRepositoryImpl implements ShoppingCartRepository {
     public CartItem save(CartItem cartItem){
         return cartItemJpaRepository.save(cartItem);
     }
+
+    @Override
+    public Optional<ShoppingCart> findById(UUID cartId) {
+        return cartJpaRepository.findById(cartId);
+    }
 }

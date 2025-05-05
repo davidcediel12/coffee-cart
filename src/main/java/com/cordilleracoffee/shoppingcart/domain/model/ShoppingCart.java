@@ -42,9 +42,8 @@ public class ShoppingCart {
     private Set<CartItem> items;
 
 
-
-    public void process(){
-        if(!status.equals(CartStatus.ACTIVE)){
+    public void process() {
+        if (!status.equals(CartStatus.ACTIVE)) {
             throw new IllegalStateException("Cart that is no active cannot be checked out");
         }
 
@@ -54,6 +53,15 @@ public class ShoppingCart {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         this.status = CartStatus.PROCESSING;
+    }
+
+
+    public void unlock() {
+        if (!status.equals(CartStatus.PROCESSING)) {
+            throw new IllegalStateException("Cart that is not processing cannot be unlocked");
+        }
+
+        this.status = CartStatus.ACTIVE;
     }
 
 }

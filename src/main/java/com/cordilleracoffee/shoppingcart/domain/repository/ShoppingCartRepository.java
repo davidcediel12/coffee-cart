@@ -15,4 +15,6 @@ public interface ShoppingCartRepository {
     ItemDiscount save(ItemDiscount itemDiscount);
 
     CartItem save(CartItem cartItem);
+
+    Optional<ShoppingCart> findById(UUID cartId);
 }
