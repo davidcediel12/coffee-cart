@@ -2,4 +2,4 @@ package com.cordilleracoffee.shoppingcart.infrastructure.messaging.consumer.chec
 
 import java.util.UUID;
 
-public record StockReservationFailed(UUID cartId) {}
+public record PurchaseFailed(UUID cartId) {}

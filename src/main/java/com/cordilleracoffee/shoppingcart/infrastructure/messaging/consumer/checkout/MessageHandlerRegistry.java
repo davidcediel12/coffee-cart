@@ -6,6 +6,7 @@ import com.cordilleracoffee.shoppingcart.infrastructure.messaging.consumer.check
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,13 @@ public class MessageHandlerRegistry {
         handlers.forEach(handler -> {
             MessageHandler annotation = AnnotationUtils.findAnnotation(handler.getClass(), MessageHandler.class);
             assert annotation != null;
-            this.handlers.put(annotation.event(), handler);
+
+            Arrays.stream(annotation.events()).forEach(eventType -> {
+                if(this.handlers.containsKey(eventType)) {
+                    throw new IllegalStateException("Duplicated event handler for: " + eventType);
+                }
+                this.handlers.put(eventType, handler);
+            });
 
         });
 
