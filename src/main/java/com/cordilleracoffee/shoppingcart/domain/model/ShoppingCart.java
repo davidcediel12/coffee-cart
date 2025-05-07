@@ -56,6 +56,15 @@ public class ShoppingCart {
     }
 
 
+    public void confirmPurchase() {
+        if (!status.equals(CartStatus.PROCESSING)) {
+            throw new IllegalStateException("Cart that is no processing cannot be confirmed");
+        }
+
+        this.status = CartStatus.CHECKED_OUT;
+    }
+
+
     public void unlock() {
         if (!status.equals(CartStatus.PROCESSING)) {
             throw new IllegalStateException("Cart that is not processing cannot be unlocked");

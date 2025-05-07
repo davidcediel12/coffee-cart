@@ -3,7 +3,7 @@ package com.cordilleracoffee.shoppingcart.infrastructure.messaging.consumer.chec
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public enum CheckoutEventType {
-    STOCK_RESERVATION_FAILED, PURCHASE_FAILED;
+    STOCK_RESERVATION_FAILED, PURCHASE_FAILED, ORDER_PLACED, PRICE_MISMATCH;
 
     @JsonCreator
     public static CheckoutEventType fromValue(String value) {
