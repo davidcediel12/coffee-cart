@@ -14,7 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@MessageHandler(events = {CheckoutEventType.STOCK_RESERVATION_FAILED, CheckoutEventType.PURCHASE_FAILED})
+@MessageHandler(events = {
+        CheckoutEventType.STOCK_RESERVATION_FAILED,
+        CheckoutEventType.PURCHASE_FAILED,
+        CheckoutEventType.PRICE_MISMATCH
+})
 @Service
 @RequiredArgsConstructor
 @Slf4j
