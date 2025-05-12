@@ -12,6 +12,7 @@ import com.cordilleracoffee.shoppingcart.domain.model.ShoppingCart;
 import com.cordilleracoffee.shoppingcart.domain.repository.PricingService;
 import com.cordilleracoffee.shoppingcart.domain.repository.ShoppingCartRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CheckoutCartServiceImpl implements CheckoutService {
 
     private final ShoppingCartRepository cartRepository;
@@ -30,6 +32,8 @@ public class CheckoutCartServiceImpl implements CheckoutService {
     @Transactional
     @Override
     public ShoppingCart checkout(UUID cartId, String userId) {
+
+        log.info("Received request to checkout cart {} for user {}", cartId, userId);
 
         ShoppingCart cart = cartRepository.findActiveByIdAndUserId(cartId, userId)
                 .orElseThrow(() -> new CartNotFoundException("Active Cart not found with id: " + cartId + " for user: " + userId));
@@ -43,6 +47,7 @@ public class CheckoutCartServiceImpl implements CheckoutService {
         completeDiscountInformation(validationResponse, cart);
 
         cart.process();
+        log.info("Cart {} is valid and has been processed", cart.getId());
         return cartRepository.save(cart);
     }
 
