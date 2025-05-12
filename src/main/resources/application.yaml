@@ -6,7 +6,7 @@ spring:
       ddl-auto: update
     properties:
       format_sql: true
-    show-sql: true
+    show-sql: false
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?currentSchema=shopping_cart
